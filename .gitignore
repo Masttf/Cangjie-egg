@@ -5,3 +5,5 @@
 */.vscode
 target/
 */target/
+template/
+.roo/
