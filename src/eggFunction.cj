@@ -37,7 +37,7 @@ class add <: EggFunction {
         for(arg in args) {
             sum += Utils.ensureNumber(arg, "+")
         }
-        return Utils.convertToObejct(sum)
+        return Value<Float64>(sum)
     }
 }
 
@@ -50,7 +50,7 @@ class sub <: EggFunction {
         for(i in 1..args.size) {
             sum -= Utils.ensureNumber(args[i], "-")
         }
-        return Utils.convertToObejct(sum)
+        return Value<Float64>(sum)
     }
 }
 
@@ -60,7 +60,7 @@ class mul <: EggFunction {
         for(arg in args) {
             sum *= Utils.ensureNumber(arg, "*")
         }
-        return Utils.convertToObejct(sum)
+        return Value<Float64>(sum)
     }
 }
 class div <: EggFunction {
@@ -74,7 +74,7 @@ class div <: EggFunction {
             throw Exception("除数不能为零")
         }
         var sum: Float64 = dividend / divisor
-        return Utils.convertToObejct(sum)
+        return Value<Float64>(sum)
     }
 }
 
@@ -84,7 +84,7 @@ class greater <: EggFunction {
             throw Exception("操作符 '>' 需要两个参数")
         }
         var flag = Utils.ensureNumber(args[0], ">") > Utils.ensureNumber(args[1], ">")
-        return Utils.convertToObejct(flag)
+        return Value<Bool>(flag)
     }
 }
 
@@ -94,7 +94,7 @@ class less <: EggFunction {
             throw Exception("操作符 '<' 需要两个参数")
         }
         var flag = Utils.ensureNumber(args[0], "<") < Utils.ensureNumber(args[1], "<")
-        return Utils.convertToObejct(flag)
+        return Value<Bool>(flag)
     }
 }
 
@@ -105,7 +105,7 @@ class equal <: EggFunction {
         }
         let val1 = Utils.ensureNumber(args[0], "==")
         let val2 = Utils.ensureNumber(args[1], "==")
-        return Utils.convertToObejct(val1 == val2)
+        return Value<Bool>(val1 == val2)
     }
 }
 
@@ -119,15 +119,15 @@ class printf <: EggFunction {
             str += Utils.convertObjectToString(arg)
         }
         print(str)
-        return Utils.convertToObejct(true)
+        return Value<Bool>(true)
     }
 }
 
 class TopLevel{
     public static func create() : Env {
         let env = Env()
-        env.define("true", Utils.convertToObejct(true))
-        env.define("false", Utils.convertToObejct(false))
+        env.define("true", Value<Bool>(true))
+        env.define("false", Value<Bool>(false))
 
         env.define("if", IfSpacialForm())
         env.define("while", WhileSpacialForm())
@@ -143,6 +143,7 @@ class TopLevel{
         env.define(">", greater())
         env.define("<", less())
         env.define("==", equal())
+        env.define("printf", printf())
         return env
     }
 }

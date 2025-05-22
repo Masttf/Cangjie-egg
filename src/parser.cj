@@ -7,7 +7,7 @@ class Parser {
     var input: String
     var pos: Int64
 
-    Parser(input: String) {
+    public init(input: String) {
         this.input = input
         this.pos = 0
     }
@@ -36,7 +36,7 @@ class Parser {
         let res = parseExpression()
         skipSpace()
         if(pos < input.size) {
-            throw Exception("程序结束后出现意外文本 " + input[pos..input.size])
+            throw ParseException("程序结束后出现意外文本 " + input[pos..input.size])
         }
         return res
         
@@ -45,7 +45,7 @@ class Parser {
     func parseExpression(): Expression {
         skipSpace()
         if(pos >= input.size) {
-            throw Exception("输入意外结束，需要更多内容")
+            throw ParseException("输入意外结束，需要更多内容")
         }
         let c: UInt8 = input[pos]
         // "
@@ -58,7 +58,7 @@ class Parser {
         } else if(c == UInt8(40)) {
             return parseApply()
         } else {
-            throw Exception("无法解析的表达式")
+            throw ParseException("无法解析的表达式")
         }
     }
     func parseStringLiteral(): ValueExpression {
@@ -68,31 +68,31 @@ class Parser {
             pos += 1
         }
         if(pos >= input.size) {
-            throw Exception("字符串没有结束")
+            throw ParseException("字符串没有结束")
         }
         let str: String = input[start..pos]
         pos += 1
-        return ValueExpression(Utils.convertToObejct(str))
+        return ValueExpression(Value<String>(str))
     }
     func parseNumberLiteral(): Expression {
         let regex = Regex("^-?\\d+(\\.\\d+)?([eE][-+]?\\d+)?")
         let matcher = Matcher(regex, input[pos..input.size])
-        let matchData = matcher.find().getOrThrow({=> Exception("期望一个数字")})
+        let matchData = matcher.find().getOrThrow({=> ParseException("期望一个数字")})
         let str = matchData.matchStr()
         pos += str.size
         let num = Float64.parse(str)
-        return ValueExpression(Utils.convertToObejct(num))
+        return ValueExpression(Value<Float64>(num))
     }
     func parseWord(): Expression {
         let regex = Regex("^[\\w+*/=<>!?-]+")
         let matcher = Matcher(regex, input[pos..input.size])
-        let matchData = matcher.find().getOrThrow({=> Exception("期望一个单词（标识符）")})
+        let matchData = matcher.find().getOrThrow({=> ParseException("期望一个单词（标识符）")})
         let str = matchData.matchStr()
         pos += str.size
         if(str == "true") {
-            return ValueExpression(Utils.convertToObejct(true))
+            return ValueExpression(Value<Bool>(true))
         } else if(str == "false") {
-            return ValueExpression(Utils.convertToObejct(false))
+            return ValueExpression(Value<Bool>(false))
         } else{
             return WordExpression(str)
         }
@@ -105,7 +105,7 @@ class Parser {
         while(true) {
             skipSpace()
             if(pos >= input.size) {
-                throw Exception("应用表达式未闭合期望')'")
+                throw ParseException("应用表达式未闭合期望')'")
             }
             if(input[pos] == UInt8(41)) {
                 pos += 1
@@ -117,4 +117,10 @@ class Parser {
         return ApplyExpression(op, args.toArray())
     }
 
+}
+
+class ParseException <: Exception {
+    public init(message: String) {
+        super(message)
+    }
 }

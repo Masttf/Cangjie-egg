@@ -17,18 +17,18 @@ class ValueExpression <: Expression {
 		return this.value;
 	}
 	public override func toString(): String {
-		if(this.value is String) {
-			let str = (this.value as String).getOrThrow({=> Exception("字符串转换错误")})
-			return "${str}"
-		} else if(this.value is Float64) {
-			let str = (this.value as Float64).getOrThrow({=> Exception("字符串转换错误")})
-			return "${str}"
-		} else if(this.value is Int64) {
-			let str = (this.value as Int64).getOrThrow({=> Exception("字符串转换错误")})
-			return "${str}"
-		} else if(this.value is Bool) {
-			let str = (this.value as Bool).getOrThrow({=> Exception("字符串转换错误")})
-			return "${str}"
+		if(this.value is Value<String>) {
+			let str = (this.value as Value<String>).getOrThrow({=> EvaluateException("字符串转换错误")})
+			return "${str.value}"
+		} else if(this.value is Value<Float64>) {
+			let str = (this.value as Value<Float64>).getOrThrow({=> EvaluateException("字符串转换错误")})
+			return "${str.value}"
+		} else if(this.value is Value<Int64>) {
+			let str = (this.value as Value<Int64>).getOrThrow({=> EvaluateException("字符串转换错误")})
+			return "${str.value}"
+		} else if(this.value is Value<Bool>) {
+			let str = (this.value as Value<Bool>).getOrThrow({=> EvaluateException("字符串转换错误")})
+			return "${str.value}"
 		} else {
 			return "unknown"
 		}
@@ -44,7 +44,7 @@ class WordExpression <: Expression {
 
   	public override func evaluate(env: Env): Object {
 		let value = env.get(this.name)
-		return value.getOrThrow({=> Exception("未定义的变量: ${this.name}")})
+		return value.getOrThrow({=> EvaluateException("未定义的变量: ${this.name}")})
   	}
 	public override func toString(): String {
 		return this.name
@@ -73,14 +73,14 @@ class ApplyExpression <: Expression {
     	let opValue:Object = this.op.evaluate(env)
 
     	if (opValue is SpecialForm) {
-			let spcialOp = (opValue as SpecialForm).getOrThrow({=> Exception("操作符不是一个特殊形式")})
+			let spcialOp = (opValue as SpecialForm).getOrThrow({=> EvaluateException("操作符不是一个特殊形式")})
 			return spcialOp.apply(this.args, env)
     	} else if (opValue is EggFunction) {
 			let argList = getArgList(this.args, env)
-			let eggOp = (opValue as EggFunction).getOrThrow({=> Exception("操作符不是一个函数")})
+			let eggOp = (opValue as EggFunction).getOrThrow({=> EvaluateException("操作符不是一个函数")})
       		return eggOp.apply(argList)
 		} else {
-			throw Exception("操作符不是一个函数或特殊形式")
+			throw EvaluateException("操作符不是一个函数或特殊形式")
 		}
   	}
 	public override func toString(): String {
@@ -90,5 +90,11 @@ class ApplyExpression <: Expression {
 		}
 		return "(${this.op.toString()} ${argStrs.toString()})"
 	}
+}
+
+class EvaluateException <: Exception {
+    public init(message: String) {
+        super(message)
+    }
 }
 

@@ -46,7 +46,7 @@ class WhileSpacialForm <: SpecialForm {
 			body.evaluate(env)
 			lastResult = true
 		}
-		return Utils.convertToObejct(lastResult)
+		return Value<Bool>(lastResult)
 	}
  }
 
@@ -58,7 +58,10 @@ class WhileSpacialForm <: SpecialForm {
 class DoSpacialForm <: SpecialForm {
 	public override func apply(args: Array<Expression>, env: Env): Object {
 		// 如果没有参数，Egg 返回 false
-		var lastResult = Utils.convertToObejct(false)
+		if(args.size == 0) {
+			return Value<Bool>(false)
+		}
+		var lastResult = Object()
 		for(arg in args) {
 			lastResult = arg.evaluate(env)
 		}
