@@ -64,11 +64,3 @@ class ApplyExpression <: Expression {
   	}
 }
 
-
-interface EggFunction {
-  	func apply(args: Array<Object>): Object; 
-}
-
-interface SpecialForm {
-  	func apply(args: Array<Expression>, env: Env): Object;
-}

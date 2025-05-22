@@ -25,10 +25,6 @@ class Parser {
             }
         }
     }
-    func convertToObejct<T>(value: T) : Object {
-        let res = (value as Object).getOrThrow({=> Exception("类型转换错误")})
-        return res
-    }
 
     func isValidWordChar(c: UInt8) : Bool {
         return c.isAsciiLetter() || "+-*/=<>!?-".contains(c.toString())
@@ -76,7 +72,7 @@ class Parser {
         }
         let str: String = input[start..pos]
         pos += 1
-        return ValueExpression(convertToObejct(str))
+        return ValueExpression(Utils.convertToObejct(str))
     }
     func parseNumberLiteral(): Expression {
         let regex = Regex("^-?\\d+(\\.\\d+)?([eE][-+]?\\d+)?")
@@ -85,7 +81,7 @@ class Parser {
         let str = matchData.matchStr()
         pos += str.size
         let num = Float64.parse(str)
-        return ValueExpression(convertToObejct(num))
+        return ValueExpression(Utils.convertToObejct(num))
     }
     func parseWord(): Expression {
         let regex = Regex("^[\\w+*/=<>!?-]+")
@@ -94,11 +90,11 @@ class Parser {
         let str = matchData.matchStr()
         pos += str.size
         if(str == "true") {
-            return ValueExpression(convertToObejct(true))
+            return ValueExpression(Utils.convertToObejct(true))
         } else if(str == "false") {
-            return ValueExpression(convertToObejct(false))
+            return ValueExpression(Utils.convertToObejct(false))
         } else{
-            return ValueExpression(convertToObejct(str))
+            return WordExpression(str)
         }
     }
     func parseApply(): Expression {
