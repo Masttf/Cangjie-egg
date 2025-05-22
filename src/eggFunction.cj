@@ -118,7 +118,7 @@ class printf <: EggFunction {
         for(arg in args) {
             str += Utils.convertObjectToString(arg)
         }
-        print(str)
+        println(str)
         return Value<Bool>(true)
     }
 }

@@ -13,8 +13,8 @@ class IfSpacialForm <: SpecialForm {
 			throw Exception("if 语句需要三个参数")
 		}
 		let test = args[0].evaluate(env)
-		let flag = (test as Bool).getOrThrow({=> Exception("if 语句参数必须是布尔值")})
-		if(flag == true) {
+		let flag = (test as Value<Bool>).getOrThrow({=> Exception("if 语句参数必须是布尔值")})
+		if(flag.value == true) {
 			return args[1].evaluate(env)
 		} else {
 			return args[2].evaluate(env)
@@ -39,8 +39,8 @@ class WhileSpacialForm <: SpecialForm {
 		var lastResult = false
 		while(true) {
 			let test = condition.evaluate(env)
-			let flag = (test as Bool).getOrThrow({=> Exception("while 语句参数必须是布尔值")})
-			if(flag == false) {
+			let flag = (test as Value<Bool>).getOrThrow({=> Exception("while 语句参数必须是布尔值")})
+			if(flag.value == false) {
 				break
 			}
 			body.evaluate(env)
