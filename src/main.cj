@@ -1,6 +1,9 @@
 package egg
 main(): Int64 {
-    let test = "(printf \"hello\")"
+    var test = "(printf \"hello\")"
+    runProgram(test)
+
+    test = "(printf (+ 1 2 3) (* 4 5))"
     runProgram(test)
     return 0
 }

@@ -14,7 +14,7 @@ class Parser {
     func skipSpace() : Unit {
         while(pos < input.size) {
             let c: UInt8 = input[pos]
-            if(c.toString() == "#"){
+            if(c == UInt8(35)){
                 while(pos < input.size && input[pos] != UInt8(10)) {
                     pos++
                 }
@@ -27,7 +27,16 @@ class Parser {
     }
 
     func isValidWordChar(c: UInt8) : Bool {
-        return c.isAsciiLetter() || "+-*/=<>!?-".contains(c.toString())
+        if (c.isAsciiLetter()) {
+            return true
+        }
+        let specialChars = "+-*/=<>!?"
+        for (i in specialChars) {
+            if(c == i){
+                return true
+            }
+        }
+        return false
     }
 
     public func parse(program: String): Expression {
@@ -58,7 +67,7 @@ class Parser {
         } else if(c == UInt8(40)) {
             return parseApply()
         } else {
-            throw ParseException("无法解析的表达式")
+            throw ParseException("无法解析的表达式" + c.toString())
         }
     }
     func parseStringLiteral(): ValueExpression {

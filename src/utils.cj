@@ -8,10 +8,12 @@ class Value<T> <: Object {
 }
 class Utils {
     public static func ensureNumber(value: Object, operationName: String):Float64 {
-        if(value is Float64) {
-            return (value as Float64).getOrThrow({=> Exception("操作符 ${operationName} 需要数字类型参数")})
-        } else if(value is Int) {
-            return Float64((value as Int).getOrThrow({=> Exception("操作符 ${operationName} 需要数字类型参数")}))
+        if(value is Value<Float64>) {
+            let temp = (value as Value<Float64>).getOrThrow({=> Exception("操作符 ${operationName} 需要数字类型参数")})
+            return temp.value
+        } else if(value is Value<Int64>) {
+            let temp = (value as Value<Int64>).getOrThrow({=> Exception("操作符 ${operationName} 需要数字类型参数")})
+            return Float64(temp.value)
         } else {
             throw Exception("操作符 ${operationName} 需要数字类型参数")
         }
