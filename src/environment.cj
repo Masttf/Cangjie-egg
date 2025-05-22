@@ -17,7 +17,11 @@ class Env {
     }
 
     public func define(name: String, value: Object) : Unit {
-        map[name] = value
+        if(map.contains(name)) {
+            map[name] = value
+        }else{
+            map.put(name, value)
+        }
     }
     public func set(name: String, value: Object) : Unit {
         if(map.contains(name)) {
