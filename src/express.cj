@@ -80,7 +80,7 @@ class ApplyExpression <: Expression {
 			let eggOp = (opValue as EggFunction).getOrThrow({=> EvaluateException("操作符不是一个函数")})
       		return eggOp.apply(argList)
 		} else {
-			throw EvaluateException("操作符不是一个函数或特殊形式")
+			throw EvaluateException("操作符不是一个函数或特殊形式" + this.op.toString())
 		}
   	}
 	public override func toString(): String {

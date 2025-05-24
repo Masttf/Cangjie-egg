@@ -31,6 +31,7 @@ class UserDefinedFunction <:EggFunction {
     }
 }
 
+// 语法 + a b
 class add <: EggFunction {
     public override func apply(args: Array<Object>): Object {
         var sum: Float64 = 0.0
@@ -41,6 +42,7 @@ class add <: EggFunction {
     }
 }
 
+// 语法 - a b c
 class sub <: EggFunction {
     public override func apply(args: Array<Object>): Object {
         if(args.size == 0){
@@ -54,6 +56,7 @@ class sub <: EggFunction {
     }
 }
 
+// 语法 * a b c
 class mul <: EggFunction {
     public override func apply(args: Array<Object>): Object {
         var sum: Float64 = 1.0
@@ -63,6 +66,7 @@ class mul <: EggFunction {
         return Value<Float64>(sum)
     }
 }
+// 语法 / a b
 class div <: EggFunction {
     public override func apply(args: Array<Object>): Object {
         if(args.size != 2){
@@ -77,7 +81,7 @@ class div <: EggFunction {
         return Value<Float64>(sum)
     }
 }
-
+// 语法 > a b
 class greater <: EggFunction {
     public override func apply(args: Array<Object>): Object {
         if(args.size != 2){
@@ -88,6 +92,7 @@ class greater <: EggFunction {
     }
 }
 
+// 语法 < a b
 class less <: EggFunction {
     public override func apply(args: Array<Object>): Object {
         if(args.size != 2){
@@ -98,6 +103,7 @@ class less <: EggFunction {
     }
 }
 
+// 语法 == a b
 class equal <: EggFunction {
     public override func apply(args: Array<Object>): Object {
         if(args.size != 2){
@@ -109,7 +115,7 @@ class equal <: EggFunction {
         return Value<Bool>(val1 == val2)
     }
 }
-
+// 语法 printf a b c
 class printf <: EggFunction {
     public override func apply(args: Array<Object>): Object {
         if(args.size == 0){
@@ -126,12 +132,14 @@ class printf <: EggFunction {
     }
 }
 
+// 语法 array a b c
 class array <: EggFunction {
     public override func apply(args: Array<Object>): Object {
         return Value<Array<Object>>(args)
     }
 }
 
+// 语法 length array
 class length <: EggFunction {
     public override func apply(args: Array<Object>): Object {
         if(args.size != 1){
@@ -150,6 +158,7 @@ class length <: EggFunction {
     }
 }
 
+// 语法 element array index
 class element <: EggFunction {
     public override func apply(args: Array<Object>): Object {
         if(args.size != 2){

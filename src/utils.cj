@@ -61,4 +61,19 @@ class Utils {
             return "unknown"
         }
     }
+    // 跳过空格、制表符、换行符和回车符
+    public static func isWhitespace(c: UInt8): Bool {
+        return c == UInt8(32) || c == UInt8(9) || c == UInt8(10) || c == UInt8(13)
+    }
+    public static func isBank(value: String): Bool {
+        if(value.isEmpty()) {
+            return true
+        }
+        for(c in value) {
+            if(Utils.isWhitespace(c) == false) {
+                return false
+            }
+        }
+        return true
+    }
 }

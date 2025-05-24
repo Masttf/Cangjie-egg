@@ -20,8 +20,7 @@ class Parser {
                 while(pos < input.size && input[pos] != UInt8(10)) {
                     pos++
                 }
-            } else if(c == UInt8(9) || c == UInt8(10) || c == UInt8(13) || c == UInt8(32)) {
-                // 跳过空格、制表符、换行符和回车符
+            } else if(Utils.isWhitespace(c)) {
                 pos += 1
             } else {
                 break
@@ -114,6 +113,7 @@ class Parser {
         }
     }
     func parseApply(): Expression {
+        let c = input[pos]
         pos += 1
         skipSpace()
         let op = parseExpression()
