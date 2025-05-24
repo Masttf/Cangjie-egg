@@ -25,12 +25,15 @@ main(): Int64 {
                 "    (printf \"add5(10) 的结果:\" (add5 10)))"
     runProgram(test)
 
+    test = "(do ( define x (array 1 2 3)) (printf (length x)) (printf (element x 0)))"
+    runProgram(test)
     runRepl()
     return 0
 }
 func runProgram(program: String): Unit {
     println("------------------------------")
     println("执行程序")
+    println(program)
     try {
         let expr : Expression = Parser(program).parse(program)
         let result = expr.evaluate(TopLevel.create())
