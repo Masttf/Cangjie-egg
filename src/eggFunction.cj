@@ -103,6 +103,7 @@ class equal <: EggFunction {
         if(args.size != 2){
             throw Exception("操作符 '==' 需要两个参数")
         }
+        // 因为全程计算使用float64， 所以这里的比较其实应该加eps
         let val1 = Utils.ensureNumber(args[0], "==")
         let val2 = Utils.ensureNumber(args[1], "==")
         return Value<Bool>(val1 == val2)
@@ -117,9 +118,64 @@ class printf <: EggFunction {
         var str = ""
         for(arg in args) {
             str += Utils.convertObjectToString(arg)
+            str += " "
         }
         println(str)
-        return Value<Bool>(true)
+        // Egg 的 print 函数按照约定返回 false
+        return Value<Bool>(false)
+    }
+}
+
+class array <: EggFunction {
+    public override func apply(args: Array<Object>): Object {
+        return Value<Array<Object>>(args)
+    }
+}
+
+class length <: EggFunction {
+    public override func apply(args: Array<Object>): Object {
+        if(args.size != 1){
+            throw Exception("操作符 'length' 需要一个参数")
+        }
+        let array = args[0]
+        if(array is Value<Array<Object>>) {
+            let arr = (array as Value<Array<Object>>).getOrThrow({=> Exception("操作符 'length' 需要一个数组参数")})
+            return Value<Float64>(Float64(arr.value.size))
+        } else if(array is Value<String>) {
+            let str = (array as Value<String>).getOrThrow({=> Exception("操作符 'length' 需要一个字符串参数")})
+            return Value<Float64>(Float64(str.value.size))
+        } else {
+            throw Exception("操作符 'length' 需要一个数组或者字符串参数")
+        }
+    }
+}
+
+class element <: EggFunction {
+    public override func apply(args: Array<Object>): Object {
+        if(args.size != 2){
+            throw Exception("操作符 'element' 需要两个参数")
+        }
+        let array = args[0]
+        let index = args[1]
+        if(array is Value<Array<Object>>) {
+            let arr = (array as Value<Array<Object>>).getOrThrow({=> Exception("操作符 'element' 需要一个数组参数")})
+            let floadt_idx = Utils.ensureNumber(index, "element")
+            let idx = Int64(floadt_idx)
+            if(idx < 0 || idx >= arr.value.size) {
+                throw Exception("数组下标越界")
+            }
+            return arr.value[idx]
+        } else if(array is Value<String>) {
+            let str = (array as Value<String>).getOrThrow({=> Exception("操作符 'element' 需要一个字符串参数")})
+            let floadt_idx = Utils.ensureNumber(index, "element")
+            let idx = Int64(floadt_idx)
+            if(idx < 0 || idx >= str.value.size) {
+                throw Exception("字符串下标越界")
+            }
+            return Value<String>(String(Rune(str.value[idx])))
+        }else {
+            throw Exception("操作符 'element' 需要一个数组或者字符串参数")
+        }
     }
 }
 
@@ -135,7 +191,6 @@ class TopLevel{
         env.define("define", DefineSpacialForm())
         env.define("fun", FunSpacialForm())
 
-
         env.define("+", add())
         env.define("-", sub())
         env.define("*", mul())
@@ -143,7 +198,12 @@ class TopLevel{
         env.define(">", greater())
         env.define("<", less())
         env.define("==", equal())
+
+
         env.define("printf", printf())
+        env.define("array", array())
+        env.define("length", length())
+        env.define("element", element())
         return env
     }
 }

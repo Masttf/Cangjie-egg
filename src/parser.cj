@@ -14,11 +14,14 @@ class Parser {
     func skipSpace() : Unit {
         while(pos < input.size) {
             let c: UInt8 = input[pos]
+            // # ascii 35 跳过注释
             if(c == UInt8(35)){
+                // \n ascii 10 直到换行符
                 while(pos < input.size && input[pos] != UInt8(10)) {
                     pos++
                 }
             } else if(c == UInt8(9) || c == UInt8(10) || c == UInt8(13) || c == UInt8(32)) {
+                // 跳过空格、制表符、换行符和回车符
                 pos += 1
             } else {
                 break
@@ -57,7 +60,10 @@ class Parser {
             throw ParseException("输入意外结束，需要更多内容")
         }
         let c: UInt8 = input[pos]
-        // "
+        // " ascii 34
+        // - ascii 45
+        // ( ascii 40
+        // ) ascii 41
         if(c == UInt8(34)) {
             return parseStringLiteral()
         }else if(c.isAsciiNumber() || (pos + 1 < input.size && input[pos] == UInt8(45) && input[pos + 1].isAsciiNumber())) {
@@ -73,6 +79,7 @@ class Parser {
     func parseStringLiteral(): ValueExpression {
         pos += 1
         let start = pos
+        // " ascii 34
         while(pos < input.size && input[pos] != UInt8(34)) {
             pos += 1
         }

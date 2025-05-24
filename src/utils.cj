@@ -37,7 +37,18 @@ class Utils {
 		} else if(value is Value<Bool>) {
 			let str = (value as Value<Bool>).getOrThrow({=> EvaluateException("字符串转换错误")})
 			return "${str.value}"
-		} else if(value is UserDefinedFunction){
+		} else if(value is Value<Array<Object>>){
+            let array = (value as Value<Array<Object>>).getOrThrow({=> Exception("数组转换错误")})
+            var str = "["
+            for(i in 0..array.value.size){
+                str += convertObjectToString(array.value[i])
+                if(i != array.value.size - 1){
+                    str += ", "
+                }
+            }
+            str += "]"
+            return str
+        }else if(value is UserDefinedFunction){
             return "UserDefinedFunction"
         } else if(value is EggFunction){
             return "EggFunction"
